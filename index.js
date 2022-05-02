@@ -25,7 +25,7 @@ class Sprite {
         }
         this.color = color
         this.isAttacking
-        this.healt=100
+        this.healt = 100
     }
 
     draw() {
@@ -119,6 +119,31 @@ function rectangularCollision({ rectangle1, rectangle2 }) {
         && rectangle1.attackBox.position.y <= rectangle2.position.y + rectangle2.height)// this 2 lines for colisions in the y axis
 }
 
+function determinateWinner({ player, enemy, timerId }) {
+    clearInterval(timerId)
+    document.querySelector('#displayTie').style.display = 'flex'
+    if (player.healt == enemy.healt) {
+        document.querySelector('#displayTie').innerHTML = 'Tie'
+    } else if (player.healt > enemy.healt) {
+        document.querySelector('#displayTie').innerHTML = 'Player 1 Wins'
+    } else if (player.healt < enemy.healt) {
+        document.querySelector('#displayTie').innerHTML = 'Player 2 Wins'
+    }
+}
+let timer = 5;
+let timerId;
+function decreaseTimer() {
+    if (timer > 0) {
+        timerId = setTimeout(decreaseTimer, 1000);
+        timer--
+        document.querySelector('#timer').innerHTML = timer
+    }
+    if (timer == 0) {
+        determinateWinner({ player, enemy })
+    }
+}
+decreaseTimer()
+
 function animate() {
     window.requestAnimationFrame(animate)
     c.fillStyle = 'black'
@@ -149,7 +174,8 @@ function animate() {
         && player.isAttacking
     ) {
         player.isAttacking = false
-        document.querySelector('#enemyHealth').style.width = enemy.healt
+        enemy.healt -= 20
+        document.querySelector('#enemyHealth').style.width = enemy.healt + '%'
     }
     if (rectangularCollision({
         rectangle1: enemy,
@@ -158,7 +184,14 @@ function animate() {
         && enemy.isAttacking
     ) {
         enemy.isAttacking = false
-        console.log('gont')
+
+        player.healt -= 20
+        document.querySelector('#playerHealth').style.width = player.healt + '%'
+    }
+
+    // end game based on healt
+    if (enemy.healt <= 0 || player.healt <= 0) {
+        determinateWinner({ player, enemy, timerId })
     }
 }
 
@@ -193,7 +226,7 @@ window.addEventListener('keydown', (event) => {
             break
         case 'ArrowDown':
             // player.attak()
-            player.attak()
+            enemy.attak()
             break
 
     }
