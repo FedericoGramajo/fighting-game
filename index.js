@@ -7,60 +7,23 @@ canvas.height = 576
 c.fillRect(0, 0, canvas.width, canvas.height)
 
 const gravity = 0.7
-class Sprite {
-    constructor({ position, velocity, color = 'red', offset }) { // pasandolos como un objeto ya no hay que preocuparse por el orden en que se manda el parametro
-        this.position = position
-        this.velocity = velocity
-        this.width = 50
-        this.height = 150
-        this.lastKey
-        this.attackBox = {
-            position: {
-                x: this.position.x,
-                y: this.position.y
-            },
-            offset,
-            width: 100,
-            height: 50
-        }
-        this.color = color
-        this.isAttacking
-        this.healt = 100
-    }
-
-    draw() {
-        c.fillStyle = this.color
-        c.fillRect(this.position.x, this.position.y, this.width, this.height)
-
-        //attack box
-        if (this.isAttacking) {
-            c.fillStyle = 'green'
-            c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height)
-        }
-    }
-
-    update() {
-        this.draw()
-        this.attackBox.position.x = this.position.x + this.attackBox.offset.x
-        this.attackBox.position.y = this.position.y
-
-        this.position.x += this.velocity.x
-        this.position.y += this.velocity.y
-
-        if (this.position.y + this.height + this.velocity.y >= canvas.height) {
-            this.velocity.y = 0
-        } else this.velocity.y += gravity
-    }
-
-    attak() {
-        this.isAttacking = true
-        setTimeout(() => {
-            this.isAttacking = false
-        }, 100);
-    }
-}
-
-const player = new Sprite({
+const background = new Sprite({
+    position: {
+        x: 0,
+        y: 0
+    },
+    imageSrc: './img/background.png'
+})
+const shop = new Sprite({
+    position: {
+        x: 600,
+        y: 128
+    },
+    imageSrc: './img/shop.png',
+    scale:2.75,
+    framesMax:6
+})
+const player = new Fighter({
     position: {
         x: 0,
         y: 0
@@ -72,11 +35,18 @@ const player = new Sprite({
     offset: {
         x: 0,
         y: 0
+    },
+    imageSrc: './img/samuraiMack/Idle.png',
+    scale:2.5,
+    framesMax:8,
+    offset:{
+        x:215,
+        y:157
     }
 })
 
 
-const enemy = new Sprite({
+const enemy = new Fighter({
     position: {
         x: 400,
         y: 100
@@ -112,44 +82,17 @@ const keys = {
     }
 }
 
-function rectangularCollision({ rectangle1, rectangle2 }) {
-    return (rectangle1.attackBox.position.x + rectangle1.attackBox.width >= rectangle2.position.x
-        && rectangle1.attackBox.position.x <= rectangle2.position.x + rectangle2.width  // this 2 lines for colisions in the x axis
-        && rectangle1.attackBox.position.y + rectangle1.attackBox.height >= rectangle2.position.y
-        && rectangle1.attackBox.position.y <= rectangle2.position.y + rectangle2.height)// this 2 lines for colisions in the y axis
-}
 
-function determinateWinner({ player, enemy, timerId }) {
-    clearInterval(timerId)
-    document.querySelector('#displayTie').style.display = 'flex'
-    if (player.healt == enemy.healt) {
-        document.querySelector('#displayTie').innerHTML = 'Tie'
-    } else if (player.healt > enemy.healt) {
-        document.querySelector('#displayTie').innerHTML = 'Player 1 Wins'
-    } else if (player.healt < enemy.healt) {
-        document.querySelector('#displayTie').innerHTML = 'Player 2 Wins'
-    }
-}
-let timer = 5;
-let timerId;
-function decreaseTimer() {
-    if (timer > 0) {
-        timerId = setTimeout(decreaseTimer, 1000);
-        timer--
-        document.querySelector('#timer').innerHTML = timer
-    }
-    if (timer == 0) {
-        determinateWinner({ player, enemy })
-    }
-}
 decreaseTimer()
 
 function animate() {
     window.requestAnimationFrame(animate)
     c.fillStyle = 'black'
     c.fillRect(0, 0, canvas.width, canvas.height)
+    background.update()
+    shop.update()
     player.update()
-    enemy.update()
+    //enemy.update()
     player.velocity.x = 0
     enemy.velocity.x = 0
 
