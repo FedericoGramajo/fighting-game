@@ -9,7 +9,7 @@ class Sprite {
         this.framesMax = framesMax
         this.framesCurrent = 0
         this.framesElapse = 0
-        this.frameHold = 10
+        this.frameHold = 5
         this.offset = offset
     }
 
@@ -71,7 +71,13 @@ class Fighter extends Sprite {
         this.framesCurrent = 0
         this.framesElapse = 0
         this.frameHold = 10
-        this.sprites=sprites
+        this.sprites = sprites
+
+        for (const sprite in this.sprites) {
+            sprites[sprite].image = new Image()
+            sprites[sprite].image.src = sprites[sprite].imageSrc
+        }
+
     }
 
     update() {
@@ -93,5 +99,31 @@ class Fighter extends Sprite {
         setTimeout(() => {
             this.isAttacking = false
         }, 100);
+    }
+
+    switchSprite(sprite) {
+        switch (sprite) {
+            case 'idle':
+                if (this.image !== this.sprites.idle.image){
+                    this.image = this.sprites.idle.image
+                    this.framesMax = this.sprites.idle.framesMax
+                    this.framesCurrent=0
+                }
+                break
+            case 'run':
+                if (this.image !== this.sprites.run.image){
+                    this.image = this.sprites.run.image
+                    this.framesMax = this.sprites.run.framesMax
+                    this.framesCurrent=0
+                }
+                break
+            case 'jump':
+                if (this.image !== this.sprites.jump.image){
+                this.image = this.sprites.jump.image
+                this.framesMax = this.sprites.jump.framesMax
+                this.framesCurrent=0
+            }
+            break
+        }
     }
 }

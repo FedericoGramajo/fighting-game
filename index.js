@@ -20,8 +20,8 @@ const shop = new Sprite({
         y: 128
     },
     imageSrc: './img/shop.png',
-    scale:2.75,
-    framesMax:6
+    scale: 2.75,
+    framesMax: 6
 })
 const player = new Fighter({
     position: {
@@ -37,11 +37,25 @@ const player = new Fighter({
         y: 0
     },
     imageSrc: './img/samuraiMack/Idle.png',
-    scale:2.5,
-    framesMax:8,
-    offset:{
-        x:215,
-        y:157
+    scale: 2.5,
+    framesMax: 8,
+    offset: {
+        x: 215,
+        y: 157
+    },
+    sprites: {
+        idle: {
+            imageSrc: './img/samuraiMack/Idle.png',
+            framesMax: 8
+        },
+        run: {
+            imageSrc: './img/samuraiMack/Run.png',
+            framesMax: 8
+        },
+        jump: {
+            imageSrc: './img/samuraiMack/Jump.png',
+            framesMax: 2
+        }
     }
 })
 
@@ -97,10 +111,17 @@ function animate() {
     enemy.velocity.x = 0
 
     //Payer movement
+
+    player.switchSprite('idle')
     if (keys.a.pressed && player.lastKey == 'a') {
         player.velocity.x = -5 //its move five px for frame
+        player.switchSprite('run')
     } else if (keys.d.pressed && player.lastKey == 'd') {
         player.velocity.x = 5
+        player.switchSprite('run')
+    }
+    if (player.velocity.y < 0) {
+        player.switchSprite('jump')
     }
     //Enemy movement
     if (keys.ArrowLeft.pressed && enemy.lastKey == 'ArrowLeft') {
