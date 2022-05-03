@@ -173,8 +173,8 @@ function animate() {
     c.fillRect(0, 0, canvas.width, canvas.height)
     background.update()
     shop.update()
-    c.fillStyle= 'rgba(255,255,255,0.15'
-    c.fillRect(0,0, canvas.width, canvas.height)
+    c.fillStyle = 'rgba(255,255,255,0.15'
+    c.fillRect(0, 0, canvas.width, canvas.height)
     player.update()
     enemy.update()
 
@@ -184,10 +184,15 @@ function animate() {
     //Payer movement
 
     if (keys.a.pressed && player.lastKey == 'a') {
-        player.velocity.x = -5 //its move five px for frame
+        if (player.position.x > 0) {
+            player.velocity.x = -5 //its move five px for frame
+        }
         player.switchSprite('run')
     } else if (keys.d.pressed && player.lastKey == 'd') {
-        player.velocity.x = 5
+        if (player.position.x < 945) {
+            player.velocity.x = 5
+        }
+
         player.switchSprite('run')
     } else {
         player.switchSprite('idle')
@@ -202,10 +207,14 @@ function animate() {
 
     //Enemy movement
     if (keys.ArrowLeft.pressed && enemy.lastKey == 'ArrowLeft') {
-        enemy.velocity.x = -5
+        if (enemy.position.x > 0) {
+            enemy.velocity.x = -5
+        }
         enemy.switchSprite('run')
     } else if (keys.ArrowRight.pressed && enemy.lastKey == 'ArrowRight') {
-        enemy.velocity.x = 5
+        if (enemy.position.x < 945) {
+            enemy.velocity.x = 5
+        }
         enemy.switchSprite('run')
     } else {
         enemy.switchSprite('idle')
@@ -225,10 +234,10 @@ function animate() {
     })
         && player.isAttacking && player.framesCurrent === 4
     ) {
-        enemy.takeHit()
+        enemy.takeHit(15)
         player.isAttacking = false
-        gsap.to('#enemyHealth',{
-            width:enemy.healt + '%'
+        gsap.to('#enemyHealth', {
+            width: enemy.healt + '%'
         })
     }
     //if player misses
@@ -244,10 +253,10 @@ function animate() {
     })
         && enemy.isAttacking && enemy.framesCurrent === 2
     ) {
-        player.takeHit()
+        player.takeHit(10)
         enemy.isAttacking = false
-        gsap.to('#playerHealth',{
-            width:player.healt + '%'
+        gsap.to('#playerHealth', {
+            width: player.healt + '%'
         })
     }
     //if enemy misses
@@ -266,15 +275,18 @@ window.addEventListener('keydown', (event) => {
     if (!player.death) {
         switch (event.key) {
             case 'd':
-                keys.d.pressed = true
-                player.lastKey = 'd'
+                if (player.position.x < 930) {
+                    console.log(player.position.x)
+                    keys.d.pressed = true
+                    player.lastKey = 'd'
+                }
                 break
             case 'a':
                 keys.a.pressed = true
                 player.lastKey = 'a'
                 break
             case 'w':
-                player.velocity.y = -20
+                if (player.velocity.y === 0) player.velocity.y = -20
                 break
             case ' ':
                 player.attak()
@@ -293,7 +305,7 @@ window.addEventListener('keydown', (event) => {
                 enemy.lastKey = 'ArrowLeft'
                 break
             case 'ArrowUp':
-                enemy.velocity.y = -20
+                if (enemy.velocity.y === 0) enemy.velocity.y = -20
                 break
             case 'ArrowDown':
                 enemy.attak()
