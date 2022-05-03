@@ -81,6 +81,34 @@ const enemy = new Fighter({
     offset: {
         x: -50,
         y: 0
+    }, imageSrc: './img/kenji/Idle.png',
+    scale: 2.5,
+    framesMax: 4,
+    offset: {
+        x: 215,
+        y: 167
+    },
+    sprites: {
+        idle: {
+            imageSrc: './img/kenji/Idle.png',
+            framesMax: 4
+        },
+        run: {
+            imageSrc: './img/kenji/Run.png',
+            framesMax: 8
+        },
+        jump: {
+            imageSrc: './img/kenji/Jump.png',
+            framesMax: 2
+        },
+        fall: {
+            imageSrc: './img/kenji/Fall.png',
+            framesMax: 2
+        },
+        attack1: {
+            imageSrc: './img/kenji/Attack1.png',
+            framesMax: 4
+        }
     }
 })
 enemy.draw()
@@ -114,33 +142,45 @@ function animate() {
     background.update()
     shop.update()
     player.update()
-    //enemy.update()
+    enemy.update()
     player.velocity.x = 0
     enemy.velocity.x = 0
 
     //Payer movement
 
-    player.switchSprite('idle')
     if (keys.a.pressed && player.lastKey == 'a') {
         player.velocity.x = -5 //its move five px for frame
         player.switchSprite('run')
     } else if (keys.d.pressed && player.lastKey == 'd') {
         player.velocity.x = 5
         player.switchSprite('run')
+    } else {
+        player.switchSprite('idle')
     }
+
     //jump
     if (player.velocity.y < 0) {
         player.switchSprite('jump')
     } else if (player.velocity.y > 0) {
         player.switchSprite('fall')
     }
+
     //Enemy movement
     if (keys.ArrowLeft.pressed && enemy.lastKey == 'ArrowLeft') {
         enemy.velocity.x = -5
+        enemy.switchSprite('run')
     } else if (keys.ArrowRight.pressed && enemy.lastKey == 'ArrowRight') {
         enemy.velocity.x = 5
+        enemy.switchSprite('run')
+    } else {
+        enemy.switchSprite('idle')
     }
-
+    //jump
+    if (enemy.velocity.y < 0) {
+        enemy.switchSprite('jump')
+    } else if (enemy.velocity.y > 0) {
+        enemy.switchSprite('fall')
+    }
     //  detect for Collision
     if (rectangularCollision({
         rectangle1: player,
