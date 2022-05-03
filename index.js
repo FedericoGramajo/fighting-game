@@ -234,11 +234,13 @@ function animate() {
     })
         && player.isAttacking && player.framesCurrent === 4
     ) {
-        enemy.takeHit(15)
-        player.isAttacking = false
-        gsap.to('#enemyHealth', {
-            width: enemy.healt + '%'
-        })
+        if (timer > 0) {
+            enemy.takeHit(15)
+            player.isAttacking = false
+            gsap.to('#enemyHealth', {
+                width: enemy.healt + '%'
+            })
+        }
     }
     //if player misses
     if (player.isAttacking && player.framesCurrent === 4) {
@@ -253,11 +255,13 @@ function animate() {
     })
         && enemy.isAttacking && enemy.framesCurrent === 2
     ) {
-        player.takeHit(10)
-        enemy.isAttacking = false
-        gsap.to('#playerHealth', {
-            width: player.healt + '%'
-        })
+        if (timer > 0) {
+            player.takeHit(10)
+            enemy.isAttacking = false
+            gsap.to('#playerHealth', {
+                width: player.healt + '%'
+            })
+        }
     }
     //if enemy misses
     if (enemy.isAttacking && enemy.framesCurrent === 2) {
